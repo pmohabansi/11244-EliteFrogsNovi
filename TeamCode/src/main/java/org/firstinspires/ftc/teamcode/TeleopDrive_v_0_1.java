@@ -39,10 +39,10 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "RR");
+        leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
         rightFrontWheelMotor = hardwareMap.get(DcMotor.class, "FR");
         leftRearWheelMotor   = hardwareMap.get(DcMotor.class, "RL");
-        rightRearWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
+        rightRearWheelMotor  = hardwareMap.get(DcMotor.class, "RR");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
