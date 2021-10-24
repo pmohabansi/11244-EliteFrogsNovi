@@ -21,6 +21,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     double rightFrontWheelPower;
     double leftRearWheelPower;
     double rightRearWheelPower;
+    double carouselWheelPower;
     double wheelPowerLimit     = 0.75;
 
     // Define variables for motors which are connected` to the wheels to rotate.
@@ -28,6 +29,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     DcMotor rightFrontWheelMotor = null;
     DcMotor leftRearWheelMotor   = null;
     DcMotor rightRearWheelMotor  = null;
+    DcMotor carouselWheelMotor  = null;
 
     // Declare LinearOpMode members.
     ElapsedTime runtime = new ElapsedTime();
@@ -39,10 +41,11 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
+        rightRearWheelMotor  = hardwareMap.get(DcMotor.class, "RR");
         rightFrontWheelMotor = hardwareMap.get(DcMotor.class, "FR");
         leftRearWheelMotor   = hardwareMap.get(DcMotor.class, "RL");
-        rightRearWheelMotor  = hardwareMap.get(DcMotor.class, "RR");
+        leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
+        carouselWheelMotor   = hardwareMap.get(DcMotor.class, "CS");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -50,11 +53,13 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         rightFrontWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         leftRearWheelMotor.setDirection(DcMotor.Direction.FORWARD);
         rightRearWheelMotor.setDirection(DcMotor.Direction.REVERSE);
+        carouselWheelMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        carouselWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -144,6 +149,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
                 rightFrontWheelPower = wheelPowerLimit;
                 leftRearWheelPower = wheelPowerLimit;
                 rightRearWheelPower = 0;
+            } else if (gamepad1.right_bumper) {
+                carouselWheelPower = 0.25;
             }
 
             telemetry.addLine("");
@@ -152,6 +159,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             rightFrontWheelMotor.setPower(rightFrontWheelPower);
             leftRearWheelMotor.setPower(leftRearWheelPower);
             rightRearWheelMotor.setPower(rightRearWheelPower);
+            carouselWheelMotor.setPower(carouselWheelPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
