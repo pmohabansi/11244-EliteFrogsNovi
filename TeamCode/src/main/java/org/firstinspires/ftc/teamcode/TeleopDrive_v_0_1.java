@@ -53,7 +53,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         rightFrontWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         leftRearWheelMotor.setDirection(DcMotor.Direction.FORWARD);
         rightRearWheelMotor.setDirection(DcMotor.Direction.REVERSE);
-        carouselWheelMotor.setDirection(DcMotor.Direction.FORWARD);
+        carouselWheelMotor.setDirection(DcMotor.Direction.REVERSE);
 
         leftRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -150,7 +150,9 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
                 leftRearWheelPower = wheelPowerLimit;
                 rightRearWheelPower = 0;
             } else if (gamepad1.right_bumper) {
-                carouselWheelPower = 0.25;
+                carouselWheelPower = 0.45;
+            } else if (!gamepad1.right_bumper) {
+                carouselWheelPower = 0;
             }
 
             telemetry.addLine("");
@@ -164,8 +166,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "front left (%.2f), front right (%.2f), rear left (%.2f)" +
-                            ", rear right (%.2f).", leftFrontWheelPower, rightFrontWheelPower,
-                    leftRearWheelPower, rightRearWheelPower);
+                            ", rear right (%.2f), carosel (%.2f).", leftFrontWheelPower, rightFrontWheelPower,
+                    leftRearWheelPower, rightRearWheelPower, carouselWheelPower);
 
             telemetry.update();
         }
