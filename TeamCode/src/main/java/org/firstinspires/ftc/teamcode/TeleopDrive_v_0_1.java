@@ -22,6 +22,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     double leftRearWheelPower;
     double rightRearWheelPower;
     double carouselWheelPower;
+    double armWheelPower;
     double wheelPowerLimit     = 0.75;
 
     // Define variables for motors which are connected` to the wheels to rotate.
@@ -30,6 +31,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     DcMotor leftRearWheelMotor   = null;
     DcMotor rightRearWheelMotor  = null;
     DcMotor carouselWheelMotor  = null;
+    DcMotor armWheelMotor  = null;
 
     // Declare LinearOpMode members.
     ElapsedTime runtime = new ElapsedTime();
@@ -46,6 +48,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         leftRearWheelMotor   = hardwareMap.get(DcMotor.class, "RL");
         leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
         carouselWheelMotor   = hardwareMap.get(DcMotor.class, "CS");
+        armWheelMotor        = hardwareMap.get(DcMotor.class, "arm");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -54,12 +57,14 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         leftRearWheelMotor.setDirection(DcMotor.Direction.FORWARD);
         rightRearWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         carouselWheelMotor.setDirection(DcMotor.Direction.REVERSE);
+        armWheelMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         carouselWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -155,6 +160,18 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
                 carouselWheelPower = 0;
             }
 
+            if (gamepad2.right_trigger != 0) {
+                // This is for shifting the robot to the right
+                telemetry.addLine("arm lift down");
+
+                armWheelPower = Range.clip(gamepad2.right_trigger, -wheelPowerLimit, wheelPowerLimit);
+            } else if (gamepad2.left_trigger != 0) {
+                // This is for shifting the robot to the right
+                telemetry.addLine("arm lift up");
+
+                armWheelPower = Range.clip(-gamepad2.left_trigger, -wheelPowerLimit, wheelPowerLimit);
+            }
+
             telemetry.addLine("");
             // Send calculated power to wheels
             leftFrontWheelMotor.setPower(leftFrontWheelPower);
@@ -162,12 +179,15 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             leftRearWheelMotor.setPower(leftRearWheelPower);
             rightRearWheelMotor.setPower(rightRearWheelPower);
             carouselWheelMotor.setPower(carouselWheelPower);
+            armWheelMotor.setPower(armWheelPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "front left (%.2f), front right (%.2f), rear left (%.2f)" +
-                            ", rear right (%.2f), carosel (%.2f).", leftFrontWheelPower, rightFrontWheelPower,
-                    leftRearWheelPower, rightRearWheelPower, carouselWheelPower);
+                            ", rear right (%.2f), carosel (%.2f), arm (%.2f).", leftFrontWheelPower, rightFrontWheelPower,
+                    leftRearWheelPower, rightRearWheelPower, carouselWheelPower, armWheelPower);
+            telemetry.addData("Controller", "gamepad2.left_trigger (%.2f), gamepad2.right_trigger (%.2f)",
+                    gamepad2.left_trigger, gamepad2.right_trigger);
 
             telemetry.update();
         }
