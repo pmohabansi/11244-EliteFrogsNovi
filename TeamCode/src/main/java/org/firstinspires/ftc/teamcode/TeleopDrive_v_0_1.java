@@ -23,6 +23,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     double rightRearWheelPower;
     double carouselWheelPower;
     double armWheelPower;
+    double servoLeftClawPosition;
+    double servoRightClawPosition;
     double wheelPowerLimit     = 0.75;
 
     // Define variables for motors which are connected` to the wheels to rotate.
@@ -32,6 +34,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     DcMotor rightRearWheelMotor  = null;
     DcMotor carouselWheelMotor  = null;
     DcMotor armWheelMotor  = null;
+    Servo   leftClawMotor  = null;
+    Servo   rightClawMotor = null;
 
     // Declare LinearOpMode members.
     ElapsedTime runtime = new ElapsedTime();
@@ -49,6 +53,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
         carouselWheelMotor   = hardwareMap.get(DcMotor.class, "CS");
         armWheelMotor        = hardwareMap.get(DcMotor.class, "arm");
+        leftClawMotor         = hardwareMap.servo.get("las");
+        rightClawMotor        = hardwareMap.servo.get("ras");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -58,6 +64,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         rightRearWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         carouselWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         armWheelMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftClawMotor.setDirection(Servo.Direction.FORWARD);
+        rightClawMotor.setDirection(Servo.Direction.FORWARD);
 
         leftRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -170,6 +178,16 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
                 telemetry.addLine("arm lift up");
 
                 armWheelPower = Range.clip(-gamepad2.left_trigger, -wheelPowerLimit, wheelPowerLimit);
+            }else if (gamepad2.right_bumper) {
+                servoLeftClawPosition = leftClawMotor.getPosition();
+                servoLeftClawPosition += 0.8;
+                servoRightClawPosition = rightClawMotor.getPosition();
+                servoRightClawPosition += 0.8;
+            } else if (gamepad2.left_bumper) {
+                servoLeftClawPosition = leftClawMotor.getPosition();
+                servoLeftClawPosition -= 0.8;
+                servoRightClawPosition = rightClawMotor.getPosition();
+                servoRightClawPosition -= 0.8;
             }
 
             telemetry.addLine("");
@@ -180,6 +198,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             rightRearWheelMotor.setPower(rightRearWheelPower);
             carouselWheelMotor.setPower(carouselWheelPower);
             armWheelMotor.setPower(armWheelPower);
+            leftClawMotor.setPosition(servoLeftClawPosition);
+            rightClawMotor.setPosition(servoRightClawPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
