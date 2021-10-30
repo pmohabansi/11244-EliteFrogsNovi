@@ -64,7 +64,7 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         rightRearWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         carouselWheelMotor.setDirection(DcMotor.Direction.REVERSE);
         armWheelMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftClawMotor.setDirection(Servo.Direction.FORWARD);
+        leftClawMotor.setDirection(Servo.Direction.REVERSE);
         rightClawMotor.setDirection(Servo.Direction.FORWARD);
 
         leftRearWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
