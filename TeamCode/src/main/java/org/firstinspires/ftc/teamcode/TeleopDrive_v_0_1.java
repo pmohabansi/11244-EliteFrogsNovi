@@ -87,6 +87,9 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             rightFrontWheelPower = 0;
             leftRearWheelPower = 0;
             rightRearWheelPower = 0;
+            carouselWheelPower = 0;
+            armWheelPower = 0;
+
 
             // calculated power to be given to wheels
             // if power value is -ve then robot forward &
@@ -180,14 +183,18 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
                 armWheelPower = Range.clip(-gamepad2.left_trigger, -wheelPowerLimit, wheelPowerLimit);
             }else if (gamepad2.right_bumper) {
                 servoLeftClawPosition = leftClawMotor.getPosition();
-                servoLeftClawPosition += 0.8;
+                servoLeftClawPosition += 0.5;
                 servoRightClawPosition = rightClawMotor.getPosition();
-                servoRightClawPosition += 0.8;
+                servoRightClawPosition += 0.5;
+                leftClawMotor.setPosition(servoLeftClawPosition);
+                rightClawMotor.setPosition(servoRightClawPosition);
             } else if (gamepad2.left_bumper) {
                 servoLeftClawPosition = leftClawMotor.getPosition();
-                servoLeftClawPosition -= 0.8;
+                servoLeftClawPosition -= 0.5;
                 servoRightClawPosition = rightClawMotor.getPosition();
-                servoRightClawPosition -= 0.8;
+                servoRightClawPosition -= 0.5;
+                leftClawMotor.setPosition(servoLeftClawPosition);
+                rightClawMotor.setPosition(servoRightClawPosition);
             }
 
             telemetry.addLine("");
@@ -198,8 +205,6 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             rightRearWheelMotor.setPower(rightRearWheelPower);
             carouselWheelMotor.setPower(carouselWheelPower);
             armWheelMotor.setPower(armWheelPower);
-            leftClawMotor.setPosition(servoLeftClawPosition);
-            rightClawMotor.setPosition(servoRightClawPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
