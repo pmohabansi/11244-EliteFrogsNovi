@@ -32,7 +32,6 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     DcMotor leftFrontWheelMotor = null;
     DcMotor rightFrontWheelMotor = null;
     DcMotor leftRearWheelMotor   = null;
-    DcMotor leftRearWheelMotor = null;
     DcMotor rightRearWheelMotor = null;
     DcMotor carouselWheelMotor = null;
     DcMotor armWheelMotor = null;
