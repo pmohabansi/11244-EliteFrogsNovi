@@ -25,17 +25,19 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     double armWheelPower;
     double servoLeftClawPosition;
     double servoRightClawPosition;
-    double wheelPowerLimit     = 0.75;
+    double wheelPowerLimit = 0.75;
+    int armNewPosition = 0;
 
     // Define variables for motors which are connected` to the wheels to rotate.
-    DcMotor leftFrontWheelMotor  = null;
+    DcMotor leftFrontWheelMotor = null;
     DcMotor rightFrontWheelMotor = null;
     DcMotor leftRearWheelMotor   = null;
-    DcMotor rightRearWheelMotor  = null;
-    DcMotor carouselWheelMotor  = null;
-    DcMotor armWheelMotor  = null;
-    Servo   leftClawMotor  = null;
-    Servo   rightClawMotor = null;
+    DcMotor leftRearWheelMotor = null;
+    DcMotor rightRearWheelMotor = null;
+    DcMotor carouselWheelMotor = null;
+    DcMotor armWheelMotor = null;
+    Servo leftClawMotor = null;
+    Servo rightClawMotor = null;
 
     // Declare LinearOpMode members.
     ElapsedTime runtime = new ElapsedTime();
@@ -47,14 +49,14 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        rightRearWheelMotor  = hardwareMap.get(DcMotor.class, "RR");
+        rightRearWheelMotor = hardwareMap.get(DcMotor.class, "RR");
         rightFrontWheelMotor = hardwareMap.get(DcMotor.class, "FR");
-        leftRearWheelMotor   = hardwareMap.get(DcMotor.class, "RL");
-        leftFrontWheelMotor  = hardwareMap.get(DcMotor.class, "FL");
-        carouselWheelMotor   = hardwareMap.get(DcMotor.class, "CS");
-        armWheelMotor        = hardwareMap.get(DcMotor.class, "arm");
-        leftClawMotor         = hardwareMap.servo.get("las");
-        rightClawMotor        = hardwareMap.servo.get("ras");
+        leftRearWheelMotor = hardwareMap.get(DcMotor.class, "RL");
+        leftFrontWheelMotor = hardwareMap.get(DcMotor.class, "FL");
+        carouselWheelMotor = hardwareMap.get(DcMotor.class, "CS");
+        armWheelMotor = hardwareMap.get(DcMotor.class, "arm");
+        leftClawMotor = hardwareMap.servo.get("las");
+        rightClawMotor = hardwareMap.servo.get("ras");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -72,7 +74,10 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
         leftFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         carouselWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armWheelMotor.setTargetPosition(armWheelMotor.getCurrentPosition());
+        armWheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armWheelMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -89,6 +94,8 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             rightRearWheelPower = 0;
             carouselWheelPower = 0;
             armWheelPower = 0;
+            servoLeftClawPosition = leftClawMotor.getPosition();
+            servoRightClawPosition = rightClawMotor.getPosition();
 
 
             // calculated power to be given to wheels
@@ -172,29 +179,32 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             }
 
             if (gamepad2.right_trigger != 0) {
-                // This is for shifting the robot to the right
-                telemetry.addLine("arm lift down");
+                // This is to lift the arm Up
+                telemetry.addLine("arm lift Up");
 
                 armWheelPower = Range.clip(gamepad2.right_trigger, -wheelPowerLimit, wheelPowerLimit);
-            } else if (gamepad2.left_trigger != 0) {
-                // This is for shifting the robot to the right
-                telemetry.addLine("arm lift up");
+                armNewPosition = armNewPosition + 1;
+                armWheelMotor.setTargetPosition(armNewPosition);
+                armWheelMotor.setPower(armWheelPower);
+            } else if(gamepad2.left_trigger != 0) {
+                // This is to lift the arm Down
+                telemetry.addLine("arm lift Down");
 
                 armWheelPower = Range.clip(-gamepad2.left_trigger, -wheelPowerLimit, wheelPowerLimit);
+                armNewPosition = armNewPosition * -1;
+                armWheelMotor.setTargetPosition(armNewPosition);
+                armWheelMotor.setPower(armWheelPower);
+                while (armWheelMotor.isBusy()) {
+                    sleep(10);
+                }
             }else if (gamepad2.right_bumper) {
-                servoLeftClawPosition = leftClawMotor.getPosition();
-                servoLeftClawPosition += 0.5;
-                servoRightClawPosition = rightClawMotor.getPosition();
-                servoRightClawPosition += 0.5;
-                leftClawMotor.setPosition(servoLeftClawPosition);
-                rightClawMotor.setPosition(servoRightClawPosition);
+                telemetry.addLine("Open the Claw");
+                servoLeftClawPosition = 0;
+                servoRightClawPosition = 0;
             } else if (gamepad2.left_bumper) {
-                servoLeftClawPosition = leftClawMotor.getPosition();
-                servoLeftClawPosition -= 0.5;
-                servoRightClawPosition = rightClawMotor.getPosition();
-                servoRightClawPosition -= 0.5;
-                leftClawMotor.setPosition(servoLeftClawPosition);
-                rightClawMotor.setPosition(servoRightClawPosition);
+                telemetry.addLine("Close the Claw");
+                servoLeftClawPosition = 0.75;
+                servoRightClawPosition = 0.82;
             }
 
             telemetry.addLine("");
@@ -204,15 +214,17 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
             leftRearWheelMotor.setPower(leftRearWheelPower);
             rightRearWheelMotor.setPower(rightRearWheelPower);
             carouselWheelMotor.setPower(carouselWheelPower);
+            leftClawMotor.setPosition(servoLeftClawPosition);
+            rightClawMotor.setPosition(servoRightClawPosition);
+
             armWheelMotor.setPower(armWheelPower);
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "front left (%.2f), front right (%.2f), rear left (%.2f)" +
-                            ", rear right (%.2f), carosel (%.2f), arm (%.2f).", leftFrontWheelPower, rightFrontWheelPower,
-                    leftRearWheelPower, rightRearWheelPower, carouselWheelPower, armWheelPower);
-            telemetry.addData("Controller", "gamepad2.left_trigger (%.2f), gamepad2.right_trigger (%.2f)",
-                    gamepad2.left_trigger, gamepad2.right_trigger);
+                            ", rear right (%.2f), carosel (%.2f), arm (%.2f), newPosition (%d), arm position (%d)," +
+                            " LeftClaw (%.2f), RightClaw (%.2f).",
+                    leftFrontWheelPower, rightFrontWheelPower, leftRearWheelPower,
+                    rightRearWheelPower, carouselWheelPower, armWheelPower, armNewPosition, armWheelMotor.getCurrentPosition(),
+                    servoLeftClawPosition, servoRightClawPosition);
 
             telemetry.update();
         }
