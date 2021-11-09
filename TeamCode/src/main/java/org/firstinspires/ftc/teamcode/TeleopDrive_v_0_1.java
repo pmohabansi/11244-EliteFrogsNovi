@@ -41,9 +41,9 @@ public class TeleopDrive_v_0_1 extends LinearOpMode {
     // Declare LinearOpMode members.
     ElapsedTime runtime = new ElapsedTime();
 
-    static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 0.5;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 20.0;     // For figuring circumference
+    static final double COUNTS_PER_MOTOR_REV = 312;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 10.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                           (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double TURN_SPEED = 0.5;
