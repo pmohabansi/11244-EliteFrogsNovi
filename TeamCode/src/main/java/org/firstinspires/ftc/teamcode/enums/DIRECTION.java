@@ -1,0 +1,14 @@
+package org.firstinspires.ftc.teamcode.enums;
+
+public enum DIRECTION {
+    FORWARD,
+    BACKWARD,
+    LEFTWARD,
+    RIGHTWARD,
+    DIAGONALLY_LEFT_FORWARD,
+    DIAGONALLY_RIGHT_FORWARD,
+    DIAGONALLY_LEFT_BACKWARD,
+    DIAGONALLY_RIGHT_BACKWARD,
+    LEFT_SPIN,
+    RIGHT_SPIN;
+}
